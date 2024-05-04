@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireLogin } = require("./middlewares/auth");
 const app = express();
 
 const PORT = 5000;
@@ -6,7 +7,7 @@ const PORT = 5000;
 app.set('view engine', 'pug');
 app.set("views", "views")
 
-app.get("/", (req, res) => {
+app.get("/", requireLogin , (req, res) => {
   let payload = {
     pageTitle: "Home"
   }
