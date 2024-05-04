@@ -1,13 +1,25 @@
 const express = require("express");
-const { requireLogin } = require("./middlewares/auth");
 const app = express();
-
+const path = require("path")
+const bodyParser = require("body-parser");
+const trimBody = require("./middlewares/trimBody");
 const PORT = 5000;
 
 app.set('view engine', 'pug');
 app.set("views", "views")
 
-app.get("/", requireLogin , (req, res) => {
+app.use(express.json())
+app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(trimBody);
+
+//Import Routes
+const authRoutes = require("./routes/authRoutes");
+const { requireLogin } = require("./middlewares/auth");
+
+app.use("/auth", authRoutes);
+
+app.get("/", requireLogin ,(req,res) => {
   let payload = {
     pageTitle: "Home"
   }
