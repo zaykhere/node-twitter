@@ -28,11 +28,11 @@ const User = require("./schemas/userSchema");
 app.use("/auth", authRoutes);
 
 app.get("/", requireLogin , async(req,res) => {
-  const user = await User.findById(req.user);
+  const user = await User.findById(req.user).select('-password');
 
   let payload = {
     pageTitle: "Home",
-    username: user.username
+    userLoggedIn: user
   }
   res.status(200).render("home", payload);
 })
