@@ -31,7 +31,10 @@ router.post("/login", async(req, res, next) => {
     const passwordMatched = await user.matchPassword(password);
     if(!passwordMatched) return res.status(404).render("login", { error: 'Invalid Credentials'});
 
-    res.redirect("/")
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 });
+    res.redirect('/');
+
   } catch (error) {
     console.log(error);
     res.status(500).json({error})
@@ -84,6 +87,13 @@ router.post("/register", async (req,res,next) => {
   }
 
   
+})
+
+router.get("/logout", async(req,res,next) => {
+  if(req.cookies.token) {
+    res.clearCookie('token');
+    res.status(200).redirect('/');
+  }
 })
 
 module.exports = router;
