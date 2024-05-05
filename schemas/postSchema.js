@@ -14,7 +14,13 @@ const postSchema = new mongoose.Schema({
   pinned: {
     type: Boolean,
     default: false
-  }
+  },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    }
+  ]
 }, {
   timestamps: true
 });

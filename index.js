@@ -34,7 +34,8 @@ app.get("/", requireLogin , async(req,res) => {
 
   let payload = {
     pageTitle: "Home",
-    userLoggedIn: user
+    userLoggedIn: user,
+    userLoggedInJs: JSON.stringify(user)
   }
   res.status(200).render("home", payload);
 })

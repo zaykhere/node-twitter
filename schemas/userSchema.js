@@ -31,7 +31,13 @@ const userSchema = new mongoose.Schema({
   profilePic: {
     type: String,
     default: "https://res.cloudinary.com/zainhither/image/upload/v1650655297/next-hotel/avatars/fbryolldevx1ozke5ouk.jpg"
-  }
+  },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post',
+    }
+  ]
 }, {
   timestamps: true
 });
