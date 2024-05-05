@@ -6,6 +6,8 @@ const trimBody = require("./middlewares/trimBody");
 const dotenv = require('dotenv')
 const mongoose = require("./database");
 const cookieParser = require('cookie-parser');
+const { requireLogin } = require("./middlewares/auth");
+const User = require("./schemas/userSchema");
 
 const PORT = 5000;
 
@@ -22,10 +24,10 @@ app.use(trimBody);
 
 //Import Routes
 const authRoutes = require("./routes/authRoutes");
-const { requireLogin } = require("./middlewares/auth");
-const User = require("./schemas/userSchema");
+const postRoutes = require("./routes/postRoutes");
 
 app.use("/auth", authRoutes);
+app.use("/api/posts", postRoutes);
 
 app.get("/", requireLogin , async(req,res) => {
   const user = await User.findById(req.user).select('-password');
