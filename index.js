@@ -3,7 +3,12 @@ const app = express();
 const path = require("path")
 const bodyParser = require("body-parser");
 const trimBody = require("./middlewares/trimBody");
+const dotenv = require('dotenv')
+const mongoose = require("./database");
+
 const PORT = 5000;
+
+dotenv.config()
 
 app.set('view engine', 'pug');
 app.set("views", "views")
