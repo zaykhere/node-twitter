@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
   content: {
     type: String,
-    required: true,
     trim: true
   },
   postedBy: {
@@ -20,7 +19,17 @@ const postSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     }
-  ]
+  ],
+  retweetUsers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    }
+  ],
+  retweetData: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
+  }
 }, {
   timestamps: true
 });

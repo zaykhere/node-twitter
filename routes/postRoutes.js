@@ -6,7 +6,10 @@ const User = require("../schemas/userSchema");
 
 router.get("/", requireLogin, async(req,res) => {
   try {
-    const posts = await Post.find().populate('postedBy', '-password').sort({"createdAt": -1})
+    const posts = await Post.find().populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 
+      path: 'postedBy', 
+      select: '-password' 
+  }  }).sort({"createdAt": -1})
     return res.status(200).json(posts)
   } catch (error) {
     console.log(error);
@@ -53,6 +56,35 @@ router.put("/:id/like", requireLogin, async(req,res) => {
     await User.findByIdAndUpdate(req.user, {[option]: {likes: req.params.id}});
 
     res.status(200).json(updatedPost)
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error})
+  }
+})
+
+router.post("/:id/retweet", requireLogin, async(req,res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.user;
+
+    // Delete a retweet
+    const deletedPost = await Post.findOneAndDelete({postedBy: userId, retweetData: postId});
+    console.log(deletedPost)
+
+    let option = deletedPost ? "$pull" : "$addToSet";
+
+    let repost = deletedPost;
+
+   if(!repost) {
+    repost = await Post.create({postedBy: userId, retweetData: postId})
+   }
+
+   await User.findByIdAndUpdate(req.user, {[option]: {retweets: postId}});
+
+   const updatedPost = await Post.findByIdAndUpdate(postId, {[option]: {retweetUsers: userId}}, {new: true});
+
+   res.status(200).json(updatedPost);
 
   } catch (error) {
     console.log(error);
