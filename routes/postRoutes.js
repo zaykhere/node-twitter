@@ -9,8 +9,33 @@ router.get("/", requireLogin, async(req,res) => {
     const posts = await Post.find().populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 
       path: 'postedBy', 
       select: '-password' 
-  }  }).sort({"createdAt": -1})
+  }  }).populate({
+    path: 'replyTo',
+    populate: {
+      path: 'postedBy',
+      select: '-password'
+    }
+  }).sort({"createdAt": -1})
     return res.status(200).json(posts)
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error})
+  }
+})
+
+router.get("/:id", requireLogin, async(req,res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 
+      path: 'postedBy', 
+      select: '-password' 
+  }  }).populate({
+    path: 'replyTo',
+    populate: {
+      path: 'postedBy',
+      select: '-password'
+    }
+  });
+    return res.status(200).json(post)
   } catch (error) {
     console.log(error);
     res.status(500).json({error})
@@ -26,6 +51,10 @@ router.post("/", requireLogin, async(req,res) => {
     content: req.body.content,
     postedBy: req.user
   };
+
+  if(req.body.replyTo) {
+    postData.replyTo = req.body.replyTo;
+  }
 
   try {
     const post = await Post.create(postData);
