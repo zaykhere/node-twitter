@@ -16,6 +16,7 @@ router.get("/", requireLogin, async(req,res) => {
       select: '-password'
     }
   }).sort({"createdAt": -1})
+    
     return res.status(200).json(posts)
   } catch (error) {
     console.log(error);
@@ -25,17 +26,24 @@ router.get("/", requireLogin, async(req,res) => {
 
 router.get("/:id", requireLogin, async(req,res) => {
   try {
-    const post = await Post.findById(req.params.id).populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 
-      path: 'postedBy', 
-      select: '-password' 
-  }  }).populate({
-    path: 'replyTo',
-    populate: {
-      path: 'postedBy',
-      select: '-password'
+    let postId = req.params.id;
+
+    let postData = await getPosts({ _id: postId });
+    postData = postData[0];
+
+    let results = {
+        postData: postData
     }
-  });
-    return res.status(200).json(post)
+
+    if(postData.replyTo !== undefined) {
+        results.replyTo = postData.replyTo;
+    }
+
+    results.replies = await getPosts({ replyTo: postId });
+
+    console.log(JSON.stringify(results));
+
+    res.status(200).send(results);
   } catch (error) {
     console.log(error);
     res.status(500).json({error})
@@ -120,5 +128,22 @@ router.post("/:id/retweet", requireLogin, async(req,res) => {
     res.status(500).json({error})
   }
 })
+
+async function getPosts(filter) {
+  let results = await Post.find(filter)
+  .populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 
+    path: 'postedBy', 
+    select: '-password' 
+}  }).populate({
+  path: 'replyTo',
+  populate: {
+    path: 'postedBy',
+    select: '-password'
+  }
+});
+
+  results = await User.populate(results, { path: "replyTo.postedBy"})
+  return await User.populate(results, { path: "retweetData.postedBy"});
+}
 
 module.exports = router;

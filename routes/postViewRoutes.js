@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/:id", requireLogin , async (req, res, next) => {
   try {
     const user = await User.findById(req.user).select('-password');
-    console.log(user);
+    // console.log(user);
     let payload = {
       pageTitle: "View Post",
       userLoggedIn: user,
