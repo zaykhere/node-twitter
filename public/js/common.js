@@ -60,6 +60,25 @@ $("#replyModal").on("hidden.bs.modal", (event) => {
     $("#replyTextarea").val("");
 })
 
+$("#deletePostModal").on("show.bs.modal", (event) => {
+    var button = $(event.relatedTarget);
+    var postId = getPostIdFromElement(button);
+    $("#deletePostButton").data("id", postId);
+});
+
+$("#deletePostButton").on("click", (event) => {
+    let id = $(event.target).data("id");
+    if(!id) return;
+
+    $.ajax({
+        url: `/api/posts/${id}`,
+        type: "DELETE",
+        success: () => {
+            location.reload()
+        }
+    })
+})
+
 $(document).on("click", ".likeButton", () => {
     let button = $(event.target);
     let postId = getPostIdFromElement(button);

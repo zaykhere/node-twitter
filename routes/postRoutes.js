@@ -127,6 +127,17 @@ router.post("/:id/retweet", requireLogin, async(req,res) => {
     console.log(error);
     res.status(500).json({error})
   }
+});
+
+router.delete("/:id", requireLogin, async(req,res) => {
+  try {
+    await Post.deleteOne({_id: req.params.id, postedBy: req.user});
+    res.status(200);
+    res.end()
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error})
+  }
 })
 
 async function getPosts(filter) {
