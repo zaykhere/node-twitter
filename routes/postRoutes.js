@@ -41,7 +41,7 @@ router.get("/:id", requireLogin, async(req,res) => {
 
     results.replies = await getPosts({ replyTo: postId });
 
-    console.log(JSON.stringify(results));
+    // console.log(JSON.stringify(results));
 
     res.status(200).send(results);
   } catch (error) {
@@ -107,7 +107,7 @@ router.post("/:id/retweet", requireLogin, async(req,res) => {
 
     // Delete a retweet
     const deletedPost = await Post.findOneAndDelete({postedBy: userId, retweetData: postId});
-    console.log(deletedPost)
+    // console.log(deletedPost)
 
     let option = deletedPost ? "$pull" : "$addToSet";
 

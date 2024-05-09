@@ -181,6 +181,7 @@ button span {
 .postFooter .postButtonContainer {
   flex: 1;
   display: flex;
+  margin-top: 10px;
 }
 
 .postFooter .postButtonContainer button {
@@ -237,5 +238,13 @@ button span {
 
 .post.largeFont .postBody,
 .post.largeFont .postFooter {
-    font-size: 23px;
+  font-size: 23px;
+}
+
+.postContentContainer .header {
+  display: flex;
+}
+
+.postContentContainer .header .date {
+  flex: 1;
 }
