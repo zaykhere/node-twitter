@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { requireLogin } = require("../middlewares/auth");
-const Post = require("../schemas/postSchema");
-const User = require("../schemas/userSchema");
+const { requireLogin } = require("../../middlewares/auth");
+const Post = require("../../schemas/postSchema");
+const User = require("../../schemas/userSchema");
 
 router.get("/", requireLogin, async(req,res) => {
   try {

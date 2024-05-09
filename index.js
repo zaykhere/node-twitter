@@ -24,12 +24,14 @@ app.use(trimBody);
 
 //Import Routes
 const authRoutes = require("./routes/authRoutes");
-const postRoutes = require("./routes/postRoutes");
+const postRoutes = require("./routes/api/postRoutes");
 const postViewRoutes = require("./routes/postViewRoutes");
+const profileViewRoutes = require("./routes/profileViewRoutes");
 
 app.use("/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/posts", postViewRoutes);
+app.use("/profile", profileViewRoutes);
 
 app.get("/", requireLogin , async(req,res) => {
   const user = await User.findById(req.user).select('-password');
