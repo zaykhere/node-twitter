@@ -168,7 +168,7 @@ function createPostHtml(postData, largeFont = false) {
   }
 
   var replyFlag = "";
-    if(postData.replyTo) {
+    if(postData.replyTo && postData.replyTo._id) {
         
         if(!postData.replyTo._id) {
             return alert("Reply to is not populated");

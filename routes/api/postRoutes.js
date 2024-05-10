@@ -6,7 +6,15 @@ const User = require("../../schemas/userSchema");
 
 router.get("/", requireLogin, async(req,res) => {
   try {
-    const posts = await Post.find().populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 
+
+    let searchObj = req.query;
+    
+    if(searchObj.hasOwnProperty("replyTo")) {
+      delete searchObj.replyTo;
+      searchObj.replyTo = {$exists: false}
+    }
+
+    const posts = await Post.find(searchObj).populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 
       path: 'postedBy', 
       select: '-password' 
   }  }).populate({
