@@ -121,7 +121,7 @@ $(document).on("click", ".retweetButton", () => {
     })
 })
 
-$(document).on("click", ".post", () => {
+$(document).on("click", ".post", (event) => {
     let element = $(event.target);
     let postId = getPostIdFromElement(element);
 
@@ -129,6 +129,30 @@ $(document).on("click", ".post", () => {
 
     if(!element.is("button")) 
         window.location.href = `/posts/${postId}`;
+})
+
+$(document).on("click", ".followButton", (event) => {
+    let button = $(event.target);
+    let userId = button.data().user;
+
+    $.ajax({
+        url: `/api/user/${userId}/follow`,
+        type: "PUT",
+        success: (data, status, xhr) => {
+            if(xhr.status === 404) {
+                alert("user not found");
+                return
+            }
+            if(data.following && data.following.includes(userId)) {
+                button.addClass("following");
+                button.text("Following");
+            }
+            else {
+                button.removeClass("following");
+                button.text("Follow");
+            }
+        }
+    })
 })
 
 function getPostIdFromElement(element) {

@@ -27,11 +27,13 @@ const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/api/postRoutes");
 const postViewRoutes = require("./routes/postViewRoutes");
 const profileViewRoutes = require("./routes/profileViewRoutes");
+const userRoutes = require("./routes/api/userRoutes");
 
 app.use("/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/posts", postViewRoutes);
 app.use("/profile", profileViewRoutes);
+app.use("/api/user", userRoutes);
 
 app.get("/", requireLogin , async(req,res) => {
   const user = await User.findById(req.user).select('-password');
