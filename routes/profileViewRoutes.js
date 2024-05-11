@@ -25,13 +25,24 @@ router.get("/:username", requireLogin, async(req,res) => {
     const user = await User.findById(req.user);
     const payload = await getPayload(req.params.username, user);
 
-    console.log(payload);
+    res.status(200).render("profilePage", payload);
+  } catch (error) {
+    res.redirect("/");
+  }
+});
+
+router.get("/:username/replies", requireLogin, async(req,res) => {
+  try {
+    const user = await User.findById(req.user);
+    const payload = await getPayload(req.params.username, user);
+    payload.selectedTab = "replies";
 
     res.status(200).render("profilePage", payload);
   } catch (error) {
     res.redirect("/");
   }
 });
+
 
 async function getPayload(username, userLoggedIn) {
   var user = await User.findOne({ username: username })

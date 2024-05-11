@@ -9,9 +9,16 @@ router.get("/", requireLogin, async(req,res) => {
 
     let searchObj = req.query;
     
-    if(searchObj.hasOwnProperty("replyTo")) {
-      delete searchObj.replyTo;
-      searchObj.replyTo = {$exists: false}
+    if(searchObj.hasOwnProperty("isReply")) {
+      if(searchObj.isReply == 'false') {
+        delete searchObj.isReply;
+        searchObj.replyTo = {$exists: false}
+      }
+      else {
+        delete searchObj.isReply;
+        searchObj.replyTo = {$exists: true}
+      }
+      
     }
 
     const posts = await Post.find(searchObj).populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 

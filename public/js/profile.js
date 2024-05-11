@@ -1,10 +1,19 @@
 $("document").ready(() => {
-  console.log("Ready profile");
-  loadPosts();
+  if(selectedTab === 'replies')
+    loadReplies()
+
+  else 
+    loadPosts()
 })
 
 function loadPosts() {
-  $.get("/api/posts", {postedBy: profileUserId, replyTo: null}, results => {
+  $.get("/api/posts", {postedBy: profileUserId, isReply: false}, results => {
+    outputPosts(results, $(".postsContainer"));
+})
+}
+
+function loadReplies() {
+  $.get("/api/posts", {postedBy: profileUserId, isReply: true}, results => {
     outputPosts(results, $(".postsContainer"));
 })
 }
