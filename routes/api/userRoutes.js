@@ -21,6 +21,30 @@ router.put("/:userId/follow", requireLogin, async (req, res) => {
     res.status(500).json({ error })
   }
 
-})
+});
+
+router.get("/:userId/following", requireLogin, async (req, res) => {
+  try {
+    const results = await User.findById(req.params.userId).populate('following', '-password');
+    res.status(200).json(results);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error })
+  }
+
+});
+
+router.get("/:userId/followers", requireLogin, async (req, res) => {
+  try {
+    const results = await User.findById(req.params.userId).populate('followers', '-password');
+    res.status(200).json(results);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error })
+  }
+
+});
 
 module.exports = router;

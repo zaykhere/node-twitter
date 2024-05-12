@@ -143,6 +143,7 @@ $(document).on("click", ".followButton", (event) => {
                 alert("user not found");
                 return
             }
+            let difference = 1;
             if(data.following && data.following.includes(userId)) {
                 button.addClass("following");
                 button.text("Following");
@@ -150,7 +151,16 @@ $(document).on("click", ".followButton", (event) => {
             else {
                 button.removeClass("following");
                 button.text("Follow");
+                difference = -1;
             }
+
+            let followersLabel = $("#followersValue");
+            if(followersLabel.length != 0) {
+                let followersText = followersLabel.text();
+                followersText = parseInt(followersText)
+                followersLabel.text(followersText + difference);
+            }
+            console.log(followersLabel)
         }
     })
 })

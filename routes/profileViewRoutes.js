@@ -43,6 +43,30 @@ router.get("/:username/replies", requireLogin, async(req,res) => {
   }
 });
 
+router.get("/:username/following", requireLogin, async(req,res) => {
+  try {
+    const user = await User.findById(req.user);
+    const payload = await getPayload(req.params.username, user);
+    payload.selectedTab = "following";
+
+    res.status(200).render("followersAndFollowing", payload);
+  } catch (error) {
+    res.redirect("/");
+  }
+});
+
+router.get("/:username/followers", requireLogin, async(req,res) => {
+  try {
+    const user = await User.findById(req.user);
+    const payload = await getPayload(req.params.username, user);
+    payload.selectedTab = "followers";
+
+    res.status(200).render("followersAndFollowing", payload);
+  } catch (error) {
+    res.redirect("/");
+  }
+});
+
 
 async function getPayload(username, userLoggedIn) {
   var user = await User.findOne({ username: username })
