@@ -6,7 +6,7 @@ const User = require("../../schemas/userSchema");
 
 router.get("/", requireLogin, async(req,res) => {
   try {
-
+    const currentUser = await User.findById(req.user);
     let searchObj = req.query;
     
     if(searchObj.hasOwnProperty("isReply")) {
@@ -20,6 +20,16 @@ router.get("/", requireLogin, async(req,res) => {
       }
       
     }
+    if(searchObj.hasOwnProperty("followingOnly")) {
+      if(searchObj.followingOnly == "true") {
+        let objectIds = currentUser.following;
+        objectIds.push(req.user);
+        searchObj.postedBy = {$in: objectIds};
+        delete searchObj.isReply;
+        delete searchObj.replyTo;
+        delete searchObj.followingOnly;
+      }
+    }
 
     const posts = await Post.find(searchObj).populate('postedBy', '-password').populate({ path: 'retweetData',  populate: { 
       path: 'postedBy', 
@@ -30,7 +40,7 @@ router.get("/", requireLogin, async(req,res) => {
       path: 'postedBy',
       select: '-password'
     }
-  }).sort({"createdAt": -1})
+  }).sort({"createdAt": -1});
     
     return res.status(200).json(posts)
   } catch (error) {
